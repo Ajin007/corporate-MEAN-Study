@@ -72,3 +72,195 @@
         }
 
         productList();
+
+
+
+**********************************Week4/Day2/session-3/Q-3*******************************************
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        #taskForm {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        #taskInput {
+            width: 300px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #addTaskButton {
+            padding: 10px 20px;
+            border: none;
+            background-color: #8e44ad;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #taskList {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .taskItem {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            width: 300px;
+        }
+
+        .taskItem button {
+            margin-top: 5px;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .completeButton {
+            background-color: #f1c40f;
+            color: black;
+        }
+
+        .deleteButton {
+            background-color: #e74c3c;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="container">
+        <h1>Task Management System</h1>
+        <div id="taskManagementSystem">
+
+        </div>
+
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
+
+ts part :::::::::::::::::::::::::
+
+interface Task {
+    id: number;
+    description: string;
+    completed: boolean;
+}
+
+// Create the form and task list container programmatically
+function createTaskManagementSystem() {
+    const taskManagementSystem = document.getElementById('taskManagementSystem')!;
+
+    // Create form
+    const taskForm = document.createElement('form');
+    taskForm.id = 'taskForm';
+    
+    const taskInput = document.createElement('input');
+    taskInput.id = 'taskInput';
+    taskInput.type = 'text';
+    taskInput.placeholder = 'Enter a new task';
+
+    const addTaskButton = document.createElement('button');
+    addTaskButton.id = 'addTaskButton';
+    addTaskButton.type = 'button';
+    addTaskButton.textContent = 'Add Task';
+    addTaskButton.addEventListener('click', addTask);
+    
+    taskForm.appendChild(taskInput);
+    taskForm.appendChild(addTaskButton);
+
+      // Create task list container
+      const taskList = document.createElement('div');
+      taskList.id = 'taskList';
+      
+      taskManagementSystem.appendChild(taskForm);
+      taskManagementSystem.appendChild(taskList);
+
+}
+let tasks: Task[] = [];
+let nextTaskId = 1;
+
+function addTask() {
+    const taskInput = document.getElementById('taskInput') as HTMLInputElement;
+    const description = taskInput.value.trim();
+
+    if (description === "") {
+        alert("Task description cannot be empty.");
+        return;
+    }
+
+    const newTask: Task = {
+        id: nextTaskId++,
+        description,
+        completed: false,
+    };
+
+    tasks.push(newTask);
+    taskInput.value = "";
+    renderTasks();
+}
+
+function renderTasks() {
+    const taskList = document.getElementById('taskList')!;
+    taskList.innerHTML = "";
+
+    tasks.forEach(task => {
+        const taskItem = document.createElement('div');
+        taskItem.className = 'taskItem';
+
+        const taskDescription = document.createElement('span');
+        taskDescription.textContent = task.description;
+        taskItem.appendChild(taskDescription);
+
+        const completeButton = document.createElement('button');
+        completeButton.className = 'completeButton';
+        completeButton.textContent = task.completed ? 'Completed' : 'Complete';
+        completeButton.addEventListener('click', () => completeTask(task.id));
+        taskItem.appendChild(completeButton);
+
+        const deleteButton = document.createElement('button');
+        deleteButton.className = 'deleteButton';
+        deleteButton.textContent = 'Delete';
+        deleteButton.addEventListener('click', () => deleteTask(task.id));
+        taskItem.appendChild(deleteButton);
+
+        taskList.appendChild(taskItem);
+    });
+}
+function completeTask(taskId: number) {
+    const task = tasks.find(t => t.id === taskId);
+    if (task) {
+        task.completed = !task.completed;
+        renderTasks();
+    }
+}
+
+function deleteTask(taskId: number) {
+    tasks = tasks.filter(t => t.id !== taskId);
+    renderTasks();
+}
+
+// Initialize the task management system
+createTaskManagementSystem();
