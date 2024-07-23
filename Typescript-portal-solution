@@ -1,0 +1,74 @@
+***************************************Week-4/Day-1/session-3/Question-2***************************
+
+        interface ProductList {
+            productId: number;
+            Amount: number;
+        }
+
+        interface CartItem extends ProductList {
+            quantity: number;
+        }
+
+        const productlist: ProductList[] = [
+            { productId: 1, Amount: 10.00 },
+            { productId: 2, Amount: 20.00 },
+            { productId: 3, Amount: 30.00 }
+        ];
+
+        let cart: CartItem[] = [];
+
+        function productList() {
+            const createproductlist = document.getElementById('productContainer');
+
+            if (createproductlist) {
+                createproductlist.innerHTML = "";
+                productlist.forEach((product, index) => {
+                    const productItem = document.createElement('div');
+                    productItem.className = "product";
+
+                    productItem.innerHTML = `
+                        <h5>Product ${product.productId}</h5>
+                        <h6>$${product.Amount.toFixed(2)}</h6>
+                        <button onclick="addToCart(${product.productId}, ${product.Amount})">Add to cart</button>
+                    `;
+                    createproductlist.appendChild(productItem);
+                });
+            }
+        }
+
+        function addToCart(productId: number, Amount: number) {
+            const existingitem = cart.find(item => item.productId === productId);
+            if (existingitem) {
+                existingitem.quantity += 1;
+            } else {
+                cart.push({ productId, Amount, quantity: 1 });
+            }
+            createCart();
+        }
+
+        function createCart() {
+            const callcart = document.getElementById('CartList');
+            if (callcart) {
+                callcart.innerHTML = "";
+                cart.forEach((cartcal, index) => {
+                    const cartitem = document.createElement("div");
+                    cartitem.className = "cart-item";
+
+                    cartitem.innerHTML = `
+                        <span>Product ${cartcal.productId} - $${cartcal.Amount.toFixed(2)} x ${cartcal.quantity}</span>
+                        <button onclick="removeFromCart(${cartcal.productId})">Remove</button>
+                    `;
+                    callcart.appendChild(cartitem);
+                });
+            }
+        }
+
+        function removeFromCart(productId: number) {
+            const index = cart.findIndex(item => item.productId === productId);
+            if (index !== -1) {
+                cart.splice(index, 1);
+            }
+            createCart();
+        }
+
+        productList();
