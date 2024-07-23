@@ -159,6 +159,10 @@
     <script src="script.js"></script>
 </body>
 
+
+
+
+
 </html>
 
 ts part :::::::::::::::::::::::::
@@ -264,3 +268,131 @@ function deleteTask(taskId: number) {
 
 // Initialize the task management system
 createTaskManagementSystem();
+
+
+
+**************************week-4/Day-2/session-1-Q1***********************************************
+
+
+<!DOCTYPE html>
+<html>
+<head>
+   
+</head>
+<body>
+    <div>
+        <h1>LIBRARY MANAGEMENT SYSTEM</h1>
+        <input type="text" id="bookTitle">
+        <input type="text" id="bookAuthor">
+        <select id="bookGenre">
+
+            <option value="Fiction">Fiction</option>
+            </select>
+
+        <button id="add-book">Add Book</button>
+
+    </div>
+    <div id="books-list">
+
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+
+
+script ::::::::::::::::::::::::::::::::::::::::::::::::::
+
+interface Book{
+    title:string;
+    author:string;
+    genre:string
+}
+
+//creating the logics based on the class
+
+class Library {
+
+    private books:Book[]=[];
+    //Declaring the Html Divelement datatype directly
+    private bookListContainer:HTMLDivElement;
+
+    
+    constructor(){
+        this.bookListContainer=document.getElementById("books-list") as HTMLDivElement;
+        this.init();
+    }
+    
+    // create an init method to get the button clicked and so a method addBook() wil be created and acceseed
+    private init():void {
+       const addbookbutton= document.getElementById("add-book") as HTMLButtonElement;
+       addbookbutton.addEventListener('click',()=>{this.addBook()})
+        
+    }
+   
+   private addBook():void {
+
+    // as HTMLInputElement we are using this so only the value is accesible in the 35th line
+     const titleInput= document.getElementById("bookTitle") as HTMLInputElement;
+       const authorInput=document.getElementById("bookAuthor") as HTMLInputElement;
+      const selectGenre= document.getElementById("bookGenre") as HTMLSelectElement;
+
+      //to avoid the whitespace used in the input we shal use the trim
+      const title=titleInput.value.trim();
+      const author=authorInput.value.trim();
+      const genre=selectGenre.value.trim();
+
+      //create the alert for empty process
+      if(!title || !author || !genre){
+        alert("Please fill in all the required fields");
+        return;
+      }
+      const newBook: Book = { title, author, genre };
+      this.books.push(newBook);
+      this.displayBooks();
+      this.clearForm();
+
+    }
+    private displayBooks(): void {
+      this.bookListContainer.innerHTML = '';
+
+      this.books.forEach((book,index) => {
+          const bookItem = document.createElement('div');
+          bookItem.className = 'book-item';
+          bookItem.innerHTML = `
+              <strong>Title:</strong> ${book.title}<br>
+              <strong>Author:</strong> ${book.author}<br>
+              <strong>Genre:</strong> ${book.genre}
+              <button class="delete-book" data-index=${index}>Delete</button>
+          `;// button added for the deletion
+          this.bookListContainer.appendChild(bookItem);
+      });
+
+      const deleteButtons=document.querySelectorAll('.delete-book');
+      deleteButtons.forEach(button =>{
+        button.addEventListener("click",(event)=>{this.deleteBook(event)})
+      })
+  }
+  private deleteBook(event: Event):void {
+    const button=event.target as HTMLButtonElement;
+    const index=button.getAttribute("data-index");
+    if(index !== null){
+      this.books.splice(Number(index),1);
+      this.displayBooks();
+    }
+   
+  }
+
+  private clearForm(): void {
+      (document.getElementById("bookTitle") as HTMLInputElement).value = '';
+      (document.getElementById("bookAuthor") as HTMLInputElement).value = '';
+      (document.getElementById("bookGenre") as HTMLSelectElement).value = '';
+  }
+}
+
+
+
+document.addEventListener('DOMContentLoaded',()=>{
+  new Library();
+})
+
+
